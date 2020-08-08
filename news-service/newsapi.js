@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 require('dotenv').config()
 const NewsAPI = require('newsapi')
-
+console.log('process.env.NEWS_API_KEY', process.env.NEWS_API_KEY)
 const newsapi = new NewsAPI(process.env.NEWS_API_KEY).v2
 
 module.exports.headlines = async (params) => newsapi.topHeadlines(params)
