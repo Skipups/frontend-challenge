@@ -4,7 +4,7 @@
       <div id="homeTitle" class="display-1">
         Showing you the {{ contentType }}
       </div>
-      <v-flex md12>
+      <v-flex xs12 sm6 offset-sm3>
         <v-text-field
           flat
           solo-inverted
@@ -34,7 +34,7 @@ import debounce from 'lodash/debounce'
 import axios from 'axios'
 import Article from '../components/Article'
 
-const stage = process.env.NODE_ENV
+const stage = 'dev'
 axios.defaults.baseURL = `${process.env.VUE_APP_SERVICE_URL}${stage}`
 axios.defaults.withCredentials = true
 axios.defaults.headers.common['Content-Type'] = 'application/json'
