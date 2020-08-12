@@ -4,7 +4,8 @@
       <div id="homeTitle" class="display-1">
         Showing you the {{ contentType }}
       </div>
-      <v-flex xs12 sm6 offset-sm3>
+
+      <v-flex md12 id="searchBar">
         <v-text-field
           flat
           solo-inverted
@@ -16,26 +17,20 @@
           @input="loadFilter"
         ></v-text-field>
       </v-flex>
-      <div>
-        <input
-          type="submit"
-          value="Sports"
-          v-model="sports"
-          @click="filterByCatagory"
-        />
-      </div>
-      <div>
+
+      <div class="dateContainter">
         <h3>Search by Date</h3>
         <div>
           <h4 class="textInDateSearch">From:</h4>
           <input type="date" v-model="fromDate" />
+          <h4 class="textInDateSearch">To:</h4>
           <input type="date" v-model="toDate" />
         </div>
         <div>
           <input type="submit" v-on:click="filterByDate" />
         </div>
       </div>
-      <div><input type="checkbox" v-model="bbcOnly" /></div>
+
       <v-flex
         xs12
         sm12
@@ -63,13 +58,15 @@ export default {
   components: {
     Article
   },
+  props: {
+    title: String
+  },
   data: () => ({
     articles: [],
     filterQuery: '',
     contentType: 'top UK headlines',
     fromDate: null,
-    toDate: null,
-    sports: ''
+    toDate: null
   }),
   created() {
     this.loadArticles('headlines', JSON.stringify({ country: 'gb' }))
@@ -78,10 +75,9 @@ export default {
   methods: {
     filterByDate() {
       const { fromDate, toDate, filterQuery } = this
-      console.log('filtering by data', fromDate, toDate, filterQuery)
+
       filterQuery === '' ? 'gb' : filterQuery
       if (fromDate && toDate) {
-        this.contentType = `search results for: ${filterQuery}, from: ${fromDate} to: ${toDate}`
         this.loadArticles(
           'search',
           JSON.stringify({ from: fromDate, to: toDate, q: filterQuery })
@@ -89,8 +85,7 @@ export default {
       }
     },
     filterByCatagory() {
-      const { sports } = this
-      console.log('filtering by sports', sports)
+      const { fromDate, toDate, filterQuery } = this
 
       if (fromDate && toDate) {
         this.contentType = `search results for: ${filterQuery}, from: ${fromDate} to: ${toDate}`
@@ -103,7 +98,6 @@ export default {
 
     loadFilter: debounce(function loadFilter(input) {
       if (input) {
-        console.log('filterQuery', this.filterQuery)
         this.contentType = `search results for: ${input}`
         this.loadArticles('search', JSON.stringify({ q: input }))
       } else {
@@ -112,7 +106,6 @@ export default {
       }
     }, 500),
     loadArticles(type, params) {
-      console.log('type', type, 'params', params)
       axios
         .post(`/articles?type=${type}`, params)
         .then(response => {
@@ -128,5 +121,20 @@ export default {
 #homeTitle {
   margin: auto;
   margin-bottom: 2.5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.searchBar {
+  width: 50vw;
+}
+.dateContainter {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #cfcfcf;
+  border: 2px solid #2a2b2d44;
+  padding: 5px;
+  width: 20vw;
 }
 </style>
