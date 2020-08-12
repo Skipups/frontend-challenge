@@ -7,8 +7,8 @@
           flat
           src="https://github.com/suverahealth/news-api"
           target="_blank"
-          >Repo</v-btn
-        >
+          >Stay informed with this basic New Reader
+        </v-btn>
       </div>
     </v-layout>
   </v-container>

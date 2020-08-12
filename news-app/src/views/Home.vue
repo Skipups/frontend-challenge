@@ -15,18 +15,27 @@
           v-model="filterQuery"
           @input="loadFilter"
         ></v-text-field>
-        <v-text-field
       </v-flex>
+      <div>
+        <input
+          type="submit"
+          value="Sports"
+          v-model="sports"
+          @click="filterByCatagory"
+        />
+      </div>
       <div>
         <h3>Search by Date</h3>
         <div>
           <h4 class="textInDateSearch">From:</h4>
-          <v-text-field v-model="fromDate"></v-text-field>
-          <h4 class="textInDateSearch">To:</h4>
-          <v-text-field v-model="toDate"></v-text-field>
-          <button v-on:click="this.filterByDate">Submit</button>
+          <input type="date" v-model="fromDate" />
+          <input type="date" v-model="toDate" />
+        </div>
+        <div>
+          <input type="submit" v-on:click="filterByDate" />
         </div>
       </div>
+      <div><input type="checkbox" v-model="bbcOnly" /></div>
       <v-flex
         xs12
         sm12
@@ -58,28 +67,39 @@ export default {
     articles: [],
     filterQuery: '',
     contentType: 'top UK headlines',
-    fromDate: '2020-07-01',
-    toDate: '2020-07-01'
+    fromDate: null,
+    toDate: null,
+    sports: ''
   }),
   created() {
-    console.log(process.env[`VUE_APP_SERVICE_URL_${stage}`])
     this.loadArticles('headlines', JSON.stringify({ country: 'gb' }))
   },
 
   methods: {
-    filterByDate: debounce(function loadFilter(input, fromDate, toDate) {
-      console.log(input, fromDate, toDate)
-      input === '' ? 'gb' : this.filterQuery
+    filterByDate() {
+      const { fromDate, toDate, filterQuery } = this
+      console.log('filtering by data', fromDate, toDate, filterQuery)
+      filterQuery === '' ? 'gb' : filterQuery
       if (fromDate && toDate) {
-        this.contentType = `search results for: ${input}, from: ${fromDate} to: ${toDate}`
+        this.contentType = `search results for: ${filterQuery}, from: ${fromDate} to: ${toDate}`
         this.loadArticles(
           'search',
-          JSON.stringify({ from: fromDate, to: toDate, q: input })
+          JSON.stringify({ from: fromDate, to: toDate, q: filterQuery })
         )
-        this.fromDate = null
-        this.toDate = null
       }
-    }, 500),
+    },
+    filterByCatagory() {
+      const { sports } = this
+      console.log('filtering by sports', sports)
+
+      if (fromDate && toDate) {
+        this.contentType = `search results for: ${filterQuery}, from: ${fromDate} to: ${toDate}`
+        this.loadArticles(
+          'search',
+          JSON.stringify({ from: fromDate, to: toDate, q: filterQuery })
+        )
+      }
+    },
 
     loadFilter: debounce(function loadFilter(input) {
       if (input) {

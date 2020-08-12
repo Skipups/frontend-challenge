@@ -12,6 +12,11 @@ This database is not bound to any particular technology (e.g. SQL or NoSQL), and
 
 ## Questions
 1. As per the above provided requirements, define the minimal database structure which can satisfy the requirements. No queries are required, and what required tables and fields required?
+
+I would use a relational database with the MemberEventRegistration table being the associative table. The relationship of event and member is many to many- a member can register for multiple events and the event has multiple members in attendance. In order to keep track of which event a member is registered for an associative table is needed. 
+
+[a relative link](MemberEvent Db.png)
+[I'm a relative reference to a repository file](./MemberEvent-Db.png)
  
 2. Define what steps required for event registration (i.e. database flow). Suppose you are already logged in and on registration page with option to select event from dropdown list, member information is available globally.
  
