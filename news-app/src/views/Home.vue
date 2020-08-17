@@ -1,10 +1,6 @@
 <template>
   <v-container grid-list-md fluid>
     <v-layout wrap>
-      <div id="homeTitle" class="display-1">
-        Showing you the {{ contentType }}
-      </div>
-
       <v-flex md12 id="searchBar">
         <v-text-field
           flat
@@ -17,18 +13,17 @@
           @input="loadFilter"
         ></v-text-field>
       </v-flex>
-
-      <div class="dateContainter">
-        <h3>Search by Date</h3>
-        <div>
+      <div :key="componentKey">
+        <v-flex v-if="isSource" class="dateContainer" xs8 align-end d-flex>
+          <span>search by date</span>
           <h4 class="textInDateSearch">From:</h4>
           <input type="date" v-model="fromDate" />
           <h4 class="textInDateSearch">To:</h4>
           <input type="date" v-model="toDate" />
-        </div>
-        <div>
-          <input type="submit" v-on:click="filterByDate" />
-        </div>
+          <v-btn @click="checkForDateResults" flat>
+            <div>submit</div>
+          </v-btn>
+        </v-flex>
       </div>
 
       <v-flex
@@ -58,54 +53,96 @@ export default {
   components: {
     Article
   },
-  props: {
-    title: String
-  },
+  props: ['changeCatagory', 'changeSource'],
   data: () => ({
     articles: [],
     filterQuery: '',
     contentType: 'top UK headlines',
     fromDate: null,
-    toDate: null
+    toDate: null,
+    source: ''
   }),
+  watch: {
+    changeCatagory() {
+      this.loadFilter(this.changeCatagory)
+    },
+    changeSource() {
+      this.source = this.changeSource
+
+      this.loadSourceFilter(this.changeSource)
+      this.source = null
+    }
+  },
   created() {
     this.loadArticles('headlines', JSON.stringify({ country: 'gb' }))
   },
-
   methods: {
-    filterByDate() {
+    //if dates produce results
+    checkForDateResults() {
       const { fromDate, toDate, filterQuery } = this
+      //if there is a to and from date
+      if (this.fromDate && this.toDate) {
+        //if there is a catagory
+        if (this.changedCatagory) {
+          this.loadArticles(
+            'search',
+            JSON.stringify({
+              from: fromDate,
+              to: toDate,
+              q: this.changedCatagory
+            })
+          )
+        } else {
+          let filter = filterQuery === '' ? 'gb' : filterQuery
 
-      filterQuery === '' ? 'gb' : filterQuery
-      if (fromDate && toDate) {
-        this.loadArticles(
-          'search',
-          JSON.stringify({ from: fromDate, to: toDate, q: filterQuery })
-        )
+          this.loadArticles(
+            'search',
+            JSON.stringify({ from: fromDate, to: toDate, q: filter })
+          )
+        }
+      } else {
+        this.loadFilter(this.filter)
       }
+      ;(this.toDate = null),
+        (this.fromDate = null)((this.filterQuery = null)),
+        (this.contentType = null),
+        (this.source = null),
+        (this.changeCatagory = null),
+        (this.changeSource = null)
     },
-    filterByCatagory() {
-      const { fromDate, toDate, filterQuery } = this
 
-      if (fromDate && toDate) {
-        this.contentType = `search results for: ${filterQuery}, from: ${fromDate} to: ${toDate}`
+    loadSourceFilter(source) {
+      if (source) {
+        let cleanedSource = source.toLowerCase().replace(/\s/g, '-')
         this.loadArticles(
-          'search',
-          JSON.stringify({ from: fromDate, to: toDate, q: filterQuery })
+          'headlines',
+          JSON.stringify({ sources: cleanedSource })
         )
       }
+
+      // ;(this.filterQuery = null),
+      //   (this.contentType = null),
+      //   (this.source = null),
+      //   (this.changeCatagory = null),
+      //   (this.changeSource = null)
     },
 
     loadFilter: debounce(function loadFilter(input) {
       if (input) {
-        this.contentType = `search results for: ${input}`
+        this.contentType = `${input}`
         this.loadArticles('search', JSON.stringify({ q: input }))
       } else {
         this.contentType = 'top UK headlines'
         this.loadArticles('headlines', JSON.stringify({ country: 'gb' }))
       }
+      // ;(this.filterQuery = null),
+      //   (this.contentType = null),
+      //   (this.source = null),
+      //   (this.changeCatagory = null),
+      //   (this.changeSource = null)
     }, 500),
     loadArticles(type, params) {
+      console.log('loadArticles ran')
       axios
         .post(`/articles?type=${type}`, params)
         .then(response => {

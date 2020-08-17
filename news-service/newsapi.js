@@ -26,6 +26,7 @@ module.exports.fetchArticles = async (type, params) => {
           return data.articles
         })
         .catch((e) => console.error(e))
+
     default:
       console.log('none')
       break
