@@ -13,18 +13,21 @@
           @input="loadFilter"
         ></v-text-field>
       </v-flex>
-      <div :key="componentKey">
-        <v-flex v-if="isSource" class="dateContainer" xs8 align-end d-flex>
-          <span>search by date</span>
-          <h4 class="textInDateSearch">From:</h4>
-          <input type="date" v-model="fromDate" />
-          <h4 class="textInDateSearch">To:</h4>
-          <input type="date" v-model="toDate" />
-          <v-btn @click="checkForDateResults" flat>
-            <div>submit</div>
-          </v-btn>
-        </v-flex>
-      </div>
+
+      <v-flex v-if="showDate" class="dateContainer" xs8 d-flex>
+        <template>
+          <v-layout>
+            <span>search by date</span>
+            <h4 class="textInDateSearch">From:</h4>
+            <input type="date" v-model="fromDate" />
+            <h4 class="textInDateSearch">To:</h4>
+            <input type="date" v-model="toDate" />
+            <v-btn @click="checkForDateResults" flat>
+              <div>submit</div>
+            </v-btn>
+          </v-layout>
+        </template>
+      </v-flex>
 
       <v-flex
         xs12
@@ -53,24 +56,24 @@ export default {
   components: {
     Article
   },
-  props: ['changeCatagory', 'changeSource'],
+  props: ['changeCatagory'],
   data: () => ({
     articles: [],
     filterQuery: '',
     contentType: 'top UK headlines',
-    fromDate: null,
-    toDate: null,
-    source: ''
+    showDate: false,
+    source: '',
+    sources: ['TechCrunch', 'CBS-NEWS', 'BBC-NEWS', 'Business Insider UK']
   }),
   watch: {
     changeCatagory() {
-      this.loadFilter(this.changeCatagory)
-    },
-    changeSource() {
-      this.source = this.changeSource
-
-      this.loadSourceFilter(this.changeSource)
-      this.source = null
+      if (this.sources.includes(this.changeCatagory)) {
+        this.showDate = false
+        this.loadSourceFilter(this.changeCatagory)
+      } else {
+        this.showDate = true
+        this.loadFilter(this.changeCatagory)
+      }
     }
   },
   created() {
@@ -82,14 +85,17 @@ export default {
       const { fromDate, toDate, filterQuery } = this
       //if there is a to and from date
       if (this.fromDate && this.toDate) {
-        //if there is a catagory
-        if (this.changedCatagory) {
+        //if there is a catagory and not it is not a source
+        if (
+          this.changeCatagory &&
+          !this.sources.includes(this.changeCatagory)
+        ) {
           this.loadArticles(
             'search',
             JSON.stringify({
               from: fromDate,
               to: toDate,
-              q: this.changedCatagory
+              q: this.changeCatagory
             })
           )
         } else {
@@ -100,15 +106,7 @@ export default {
             JSON.stringify({ from: fromDate, to: toDate, q: filter })
           )
         }
-      } else {
-        this.loadFilter(this.filter)
       }
-      ;(this.toDate = null),
-        (this.fromDate = null)((this.filterQuery = null)),
-        (this.contentType = null),
-        (this.source = null),
-        (this.changeCatagory = null),
-        (this.changeSource = null)
     },
 
     loadSourceFilter(source) {
@@ -119,12 +117,6 @@ export default {
           JSON.stringify({ sources: cleanedSource })
         )
       }
-
-      // ;(this.filterQuery = null),
-      //   (this.contentType = null),
-      //   (this.source = null),
-      //   (this.changeCatagory = null),
-      //   (this.changeSource = null)
     },
 
     loadFilter: debounce(function loadFilter(input) {
@@ -135,18 +127,14 @@ export default {
         this.contentType = 'top UK headlines'
         this.loadArticles('headlines', JSON.stringify({ country: 'gb' }))
       }
-      // ;(this.filterQuery = null),
-      //   (this.contentType = null),
-      //   (this.source = null),
-      //   (this.changeCatagory = null),
-      //   (this.changeSource = null)
     }, 500),
     loadArticles(type, params) {
-      console.log('loadArticles ran')
       axios
         .post(`/articles?type=${type}`, params)
         .then(response => {
           this.articles = response.data.articles
+          this.toDate = null
+          this.fromDate = null
         })
         .catch(error => console.log({ error }))
     }
