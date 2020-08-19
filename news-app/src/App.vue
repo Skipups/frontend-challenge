@@ -81,7 +81,6 @@ export default {
 .nav_container {
   display: flex;
   flex-direction: row;
-
   align-items: center;
   background-color: red;
 }
@@ -90,11 +89,10 @@ export default {
   padding: 12px 5px;
   overflow: scroll;
   background-color: #f1f1f1;
-  padding: 40px 10px; /* Large padding which will shrink on scroll (using JS) */
-  transition: 0.4s; /* Adds a transition effect when the padding is decreased */
-  position: fixed; /* Sticky/fixed navbar */
+  padding: 40px 10px;
+  position: fixed;
   width: 100%;
-  top: 0; /* At the top */
+  top: 0;
   z-index: 99;
 }
 .top {
