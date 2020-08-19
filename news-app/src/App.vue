@@ -82,7 +82,6 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: red;
 }
 .v-toolbar__content {
   justify-content: space-between;
@@ -93,7 +92,6 @@ export default {
   position: fixed;
   width: 100%;
   top: 0;
-  z-index: 99;
 }
 .top {
   color: #0d2633;
@@ -116,10 +114,5 @@ export default {
   .application {
     padding: 20px 10px !important;
   }
-}
-.application > * {
-  max-width: 1300rem;
-  margin-left: auto;
-  margin-right: auto;
 }
 </style>

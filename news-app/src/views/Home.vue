@@ -17,10 +17,10 @@
       <v-flex v-if="showDate" class="dateContainer" xs8 d-flex>
         <template>
           <v-layout>
-            <span>search by date</span>
-            <h4 class="textInDateSearch">From:</h4>
+            <h4 class="datetitle">search by date</h4>
+            <h4 class="textInDateSearch">from:</h4>
             <input type="date" v-model="fromDate" />
-            <h4 class="textInDateSearch">To:</h4>
+            <h4 class="textInDateSearch">to:</h4>
             <input type="date" v-model="toDate" />
             <v-btn @click="checkForDateResults" flat>
               <div>submit</div>
@@ -153,9 +153,15 @@ export default {
 .searchBar {
   width: 50vw;
 }
+.datetitle,
+.textInDateSearch {
+  padding: 5px;
+  width: 20vw;
+}
 .dateContainter {
   display: flex;
   justify-content: center;
+  align-content: center;
   flex-direction: column;
   background-color: #cfcfcf;
   border: 2px solid #2a2b2d44;
