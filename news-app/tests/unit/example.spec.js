@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import HelloWorld from '@/components/HelloWorld.vue'
+
 import App from '../../src/App.vue'
 
 const appWrapper = shallowMount(App)
@@ -14,9 +14,11 @@ const appWrapper = shallowMount(App)
 // });
 
 //checking if changeCatagory changes the name of the catagory
-it('onclick sets a new catagory name', () => {
-  appWrapper.setData({ changeCatagory: 'SPORTS' })
-  const button = appWrapper.find('v-btn')
-  button.trigger('click')
-  expect(appWrapper.vm.changeCatagory).toBe('HEALTH')
+describe('testing App.vue button', () => {
+  it('onclick sets a new catagory name', () => {
+    appWrapper.setData({ changeCatagory: 'SPORTS' })
+    const button = appWrapper.find('v-btn')
+    button.trigger('click')
+    expect(appWrapper.vm.changeCatagory).toBe('HOME')
+  })
 })
